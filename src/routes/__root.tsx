@@ -33,10 +33,14 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Nawras The Barbershop · Premium Grooming in Amman" },
       { name: "description", content: "Book your appointment at Nawras The Barbershop in Wadi Al-Seer, Amman. Premium haircuts, beard trims, hot towel shaves & grooming." },
-      { property: "og:title", content: "Nawras The Barbershop" },
-      { property: "og:description", content: "Premium grooming in Amman. Book online in seconds." },
+      { property: "og:title", content: "Nawras The Barbershop · Premium Grooming in Amman" },
+      { property: "og:description", content: "Book your appointment at Nawras The Barbershop in Wadi Al-Seer, Amman. Premium haircuts, beard trims, hot towel shaves & grooming." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Nawras The Barbershop · Premium Grooming in Amman" },
+      { name: "twitter:description", content: "Book your appointment at Nawras The Barbershop in Wadi Al-Seer, Amman. Premium haircuts, beard trims, hot towel shaves & grooming." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/58708b35-842a-4c17-b3de-d2fd0197abfa/id-preview-225ff519--d61a5745-ce11-41d0-88fa-4f753fb35a10.lovable.app-1777233071724.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/58708b35-842a-4c17-b3de-d2fd0197abfa/id-preview-225ff519--d61a5745-ce11-41d0-88fa-4f753fb35a10.lovable.app-1777233071724.png" },
     ],
     links: [
       {
