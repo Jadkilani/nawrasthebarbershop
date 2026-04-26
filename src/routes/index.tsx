@@ -83,7 +83,7 @@ function Index() {
         <div className="mx-auto max-w-6xl px-4 pt-20 pb-28 sm:pt-28 sm:pb-36 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full gold-border bg-card/40 text-xs uppercase tracking-[0.2em] text-primary/90 mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Est. Amman · Jordan
+            {t("since")} · Amman, Jordan
           </div>
           <h1 className="font-display text-5xl sm:text-7xl font-light leading-[1.05] tracking-tight">
             <span className="block text-foreground/95">{t("premiumExperience").split(" ").slice(0, -2).join(" ")}</span>
