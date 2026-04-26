@@ -82,6 +82,48 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_services: {
+        Row: {
+          booking_id: string
+          created_at: string
+          duration_minutes: number
+          id: string
+          price_jod: number
+          service_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          duration_minutes: number
+          id?: string
+          price_jod: number
+          service_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          price_jod?: number
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_services_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_services_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           barber_id: string
