@@ -188,7 +188,7 @@ function AppointmentsTab() {
                     {b.services?.name} · {b.barbers?.name} · {b.services?.price_jod} JOD
                   </div>
                   <div className="text-sm mt-1.5 text-foreground/85 font-medium">
-                    {format(new Date(b.starts_at), "EEE, d MMM · HH:mm")}
+                    {format(new Date(b.starts_at), "EEE, d MMM · h:mm a")}
                   </div>
                   <div className="flex items-center gap-3 mt-2 text-sm">
                     <a href={`tel:${b.customer_phone}`} className="text-muted-foreground hover:text-primary inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {b.customer_phone}</a>
