@@ -105,10 +105,14 @@ function Index() {
             </Button>
           </div>
 
-          <div className="mt-12 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 10:00 – 23:00</div>
-            <div className="h-4 w-px bg-border" />
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 10:00 AM – 11:00 PM</div>
+            <div className="hidden sm:block h-4 w-px bg-border" />
             <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary/70" /> Wadi Al-Seer</div>
+            <div className="hidden sm:block h-4 w-px bg-border" />
+            <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+              <Phone className="h-4 w-4 text-primary/70" /> 07 9817 5723
+            </a>
           </div>
         </div>
       </section>
