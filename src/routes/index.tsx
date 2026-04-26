@@ -5,8 +5,15 @@ import { useI18n } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Phone, MessageCircle, Star, Scissors, ArrowRight } from "lucide-react";
+import { MapPin, Clock, Phone, MessageCircle, Star, Scissors, ArrowRight, Instagram, Facebook } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import heroImage from "@/assets/hero-barbershop.jpg";
+
+const INSTAGRAM_URL = "https://www.instagram.com/nawras.jo1?igsh=aXFqM2NibXM4NzVx";
+const FACEBOOK_URL = "https://www.facebook.com/share/1Bp3jCRwy1/";
+const MAP_QUERY = "Nawras+The+Barbershop+Wadi+Al-Seer+Amman";
+const MAP_EMBED = `https://www.google.com/maps?q=${MAP_QUERY}&output=embed`;
+const MAP_LINK = `https://www.google.com/maps/search/?api=1&query=${MAP_QUERY}`;
 
 export const Route = createFileRoute("/")({
   component: Index,
