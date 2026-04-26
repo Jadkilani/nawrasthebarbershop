@@ -26,8 +26,9 @@ function ConfirmedPage() {
   const phone = "+962798175723";
 
   const when = search.when ? new Date(search.when) : null;
+  const whenStr = when ? format(when, "EEEE, d MMM · h:mm a") : "";
   const waMessage = encodeURIComponent(
-    `Hi! I just booked an appointment at Nawras Barbershop.\nName: ${search.name ?? ""}\nService: ${search.service ?? ""}\nBarber: ${search.barber ?? ""}\nWhen: ${when ? format(when, "EEEE, d MMM · HH:mm") : ""}`
+    `Hi! I just booked an appointment at Nawras Barbershop.\nName: ${search.name ?? ""}\nService: ${search.service ?? ""}\nBarber: ${search.barber ?? ""}\nWhen: ${whenStr}`
   );
 
   return (
