@@ -93,6 +93,17 @@ const dict: Dict = {
   invalidName: { en: "Name must be at least 2 characters", ar: "الاسم يجب أن يكون حرفين على الأقل" },
   bookingError: { en: "This time slot was just taken. Please pick another.", ar: "تم حجز هذا الوقت للتو. يرجى اختيار وقت آخر." },
   back_home: { en: "Back to home", ar: "العودة للرئيسية" },
+  selectServices: { en: "Select services", ar: "اختر الخدمات" },
+  selectServicesHint: { en: "Tap one or more — they'll be numbered in order", ar: "اضغط على خدمة أو أكثر — سيتم ترقيمها بالترتيب" },
+  selected: { en: "Selected", ar: "المختار" },
+  total: { en: "Total", ar: "الإجمالي" },
+  totalDuration: { en: "Total time", ar: "الوقت الإجمالي" },
+  since: { en: "Since 1992", ar: "منذ 1992" },
+  owner: { en: "Owner", ar: "المالك" },
+  followUs: { en: "Follow us", ar: "تابعنا" },
+  scanToBook: { en: "Scan to book", ar: "امسح للحجز" },
+  findUs: { en: "Find us on the map", ar: "اعثر علينا على الخريطة" },
+  noServiceSelected: { en: "Please select at least one service", ar: "يرجى اختيار خدمة واحدة على الأقل" },
 };
 
 const I18nContext = createContext<{

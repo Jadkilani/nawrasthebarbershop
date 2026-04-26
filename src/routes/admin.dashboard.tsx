@@ -188,7 +188,7 @@ function AppointmentsTab() {
                     {b.services?.name} · {b.barbers?.name} · {b.services?.price_jod} JOD
                   </div>
                   <div className="text-sm mt-1.5 text-foreground/85 font-medium">
-                    {format(new Date(b.starts_at), "EEE, d MMM · HH:mm")}
+                    {format(new Date(b.starts_at), "EEE, d MMM · h:mm a")}
                   </div>
                   <div className="flex items-center gap-3 mt-2 text-sm">
                     <a href={`tel:${b.customer_phone}`} className="text-muted-foreground hover:text-primary inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {b.customer_phone}</a>
@@ -421,7 +421,7 @@ function BarbersTab() {
             {unavail.map((u) => (
               <div key={u.id} className="flex items-center justify-between gap-2 p-2 rounded border border-border/40 text-sm">
                 <div>
-                  <div>{format(new Date(u.starts_at), "d MMM HH:mm")} → {format(new Date(u.ends_at), "d MMM HH:mm")}</div>
+                  <div>{format(new Date(u.starts_at), "d MMM h:mm a")} → {format(new Date(u.ends_at), "d MMM h:mm a")}</div>
                   {u.reason && <div className="text-xs text-muted-foreground">{u.reason}</div>}
                 </div>
                 <Button size="icon" variant="ghost" onClick={() => removeUnavail(u.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>

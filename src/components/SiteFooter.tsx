@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { MapPin, Phone, MessageCircle } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Instagram, Facebook } from "lucide-react";
+
+const INSTAGRAM_URL = "https://www.instagram.com/nawras.jo1?igsh=aXFqM2NibXM4NzVx";
+const FACEBOOK_URL = "https://www.facebook.com/share/1Bp3jCRwy1/";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -11,11 +14,12 @@ export function SiteFooter() {
         <div>
           <div className="font-display text-2xl gold-text">{t("brandFull")}</div>
           <p className="mt-2 text-sm text-muted-foreground">{t("tagline")}</p>
+          <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/80">{t("since")}</p>
         </div>
         <div className="text-sm space-y-2">
           <div className="font-medium text-foreground/90">{t("visitUs")}</div>
           <a
-            href="https://maps.google.com/?q=Nawras+Barbershop+Amman"
+            href="https://www.google.com/maps/search/?api=1&query=Nawras+The+Barbershop+Wadi+Al-Seer+Amman"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
@@ -37,6 +41,29 @@ export function SiteFooter() {
         <div className="text-sm space-y-2">
           <div className="font-medium text-foreground/90">{t("hours")}</div>
           <div className="text-muted-foreground">Sun – Sat · 10:00 AM – 11:00 PM</div>
+
+          <div className="font-medium text-foreground/90 pt-3">{t("followUs")}</div>
+          <div className="flex items-center gap-2">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+          </div>
+
           <Link to="/admin" className="inline-block text-xs text-muted-foreground/60 hover:text-primary mt-4">
             {t("adminLogin")} →
           </Link>
@@ -44,7 +71,7 @@ export function SiteFooter() {
       </div>
       <div className="hairline" />
       <div className="text-center text-xs text-muted-foreground/60 py-4">
-        © {new Date().getFullYear()} Nawras The Barbershop · Amman
+        © {new Date().getFullYear()} Nawras The Barbershop · Amman · {t("since")}
       </div>
     </footer>
   );

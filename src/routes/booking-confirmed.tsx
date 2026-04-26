@@ -26,8 +26,9 @@ function ConfirmedPage() {
   const phone = "+962798175723";
 
   const when = search.when ? new Date(search.when) : null;
+  const whenStr = when ? format(when, "EEEE, d MMM · h:mm a") : "";
   const waMessage = encodeURIComponent(
-    `Hi! I just booked an appointment at Nawras Barbershop.\nName: ${search.name ?? ""}\nService: ${search.service ?? ""}\nBarber: ${search.barber ?? ""}\nWhen: ${when ? format(when, "EEEE, d MMM · HH:mm") : ""}`
+    `Hi! I just booked an appointment at Nawras Barbershop.\nName: ${search.name ?? ""}\nService: ${search.service ?? ""}\nBarber: ${search.barber ?? ""}\nWhen: ${whenStr}`
   );
 
   return (
@@ -56,7 +57,7 @@ function ConfirmedPage() {
                 <Row icon={<User className="h-4 w-4" />} label={t("barbers")} value={search.barber} />
               )}
               {when && (
-                <Row icon={<CalIcon className="h-4 w-4" />} label={t("selectDate")} value={format(when, "EEEE, d MMM · HH:mm")} />
+                <Row icon={<CalIcon className="h-4 w-4" />} label={t("selectDate")} value={whenStr} />
               )}
             </div>
           )}
