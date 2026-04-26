@@ -57,7 +57,7 @@ function ConfirmedPage() {
                 <Row icon={<User className="h-4 w-4" />} label={t("barbers")} value={search.barber} />
               )}
               {when && (
-                <Row icon={<CalIcon className="h-4 w-4" />} label={t("selectDate")} value={format(when, "EEEE, d MMM · HH:mm")} />
+                <Row icon={<CalIcon className="h-4 w-4" />} label={t("selectDate")} value={whenStr} />
               )}
             </div>
           )}
