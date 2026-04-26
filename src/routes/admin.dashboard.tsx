@@ -421,7 +421,7 @@ function BarbersTab() {
             {unavail.map((u) => (
               <div key={u.id} className="flex items-center justify-between gap-2 p-2 rounded border border-border/40 text-sm">
                 <div>
-                  <div>{format(new Date(u.starts_at), "d MMM HH:mm")} → {format(new Date(u.ends_at), "d MMM HH:mm")}</div>
+                  <div>{format(new Date(u.starts_at), "d MMM h:mm a")} → {format(new Date(u.ends_at), "d MMM h:mm a")}</div>
                   {u.reason && <div className="text-xs text-muted-foreground">{u.reason}</div>}
                 </div>
                 <Button size="icon" variant="ghost" onClick={() => removeUnavail(u.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
