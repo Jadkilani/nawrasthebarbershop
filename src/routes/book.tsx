@@ -39,6 +39,8 @@ function BookPage() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
@@ -56,6 +58,25 @@ function BookPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [takenSlots, setTakenSlots] = useState<{ start: number; end: number }[]>([]);
+
+  const timeSectionRef = useRef<HTMLDivElement | null>(null);
+
+  // Auth gate: customers MUST be signed in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSignedIn(!!session);
+      setAuthChecked(true);
+      if (session?.user) {
+        // Pre-fill name from email if empty
+        if (!name && session.user.email) setName(session.user.email.split("@")[0]);
+      }
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsSignedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selectedServices = useMemo(
     () => selectedServiceIds.map((id) => services.find((s) => s.id === id)!).filter(Boolean),
