@@ -115,6 +115,7 @@ const dict: Dict = {
   myBookings: { en: "My bookings", ar: "حجوزاتي" },
   serviceSwapped: { en: "Replaced previous selection", ar: "تم استبدال الاختيار السابق" },
   serviceIncluded: { en: "Already included in another service", ar: "مشمولة بالفعل في خدمة أخرى" },
+  completeStep: { en: "Please complete this step", ar: "يرجى إكمال هذه الخطوة" },
 };
 
 const I18nContext = createContext<{
