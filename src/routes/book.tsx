@@ -196,10 +196,56 @@ function BookPage() {
   const localized = <T extends { name: string; name_ar: string | null }>(item: T) =>
     lang === "ar" && item.name_ar ? item.name_ar : item.name;
 
+  // Smart toggle: handles conflict_group (auto-replace) and includes_groups (block duplicates already covered)
   const toggleService = (id: string) => {
-    setSelectedServiceIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
     setTime("");
+    setSelectedServiceIds((prev) => {
+      // Deselect if already selected
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+
+      const incoming = services.find((s) => s.id === id);
+      if (!incoming) return prev;
+
+      const incomingIncludes = new Set(incoming.includes_groups ?? []);
+      const incomingGroup = incoming.conflict_group;
+
+      // Block: if any currently-selected service ALREADY INCLUDES the incoming's group(s)
+      // e.g. Hair+Beard is selected (includes 'beard'), user taps Beard Trim (group=beard)
+      const blockedBy = prev
+        .map((pid) => services.find((s) => s.id === pid))
+        .filter(Boolean)
+        .find((s) => incomingGroup && (s!.includes_groups ?? []).includes(incomingGroup) && s!.id !== id);
+
+      if (blockedBy) {
+        toast.info(`${localized(blockedBy)} ${t("serviceIncluded")}`);
+        return prev;
+      }
+
+      // Replace: drop any selected service whose conflict_group OR included groups overlap with incoming's
+      const next = prev.filter((pid) => {
+        const s = services.find((x) => x.id === pid);
+        if (!s) return false;
+        const sameGroup = !!incomingGroup && s.conflict_group === incomingGroup;
+        const incomingCoversIt = (s.includes_groups ?? []).some((g) => incomingIncludes.has(g));
+        const itCoversIncoming = !!incomingGroup && (s.includes_groups ?? []).includes(incomingGroup);
+        return !(sameGroup || incomingCoversIt || itCoversIncoming);
+      });
+
+      if (next.length !== prev.length) {
+        toast.success(t("serviceSwapped"));
+      }
+      return [...next, id];
+    });
   };
+
+  // Auto-scroll to time section when a date is picked
+  useEffect(() => {
+    if (date && timeSectionRef.current) {
+      setTimeout(() => {
+        timeSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [date]);
 
   const canNext = (s: number) => {
     if (s === 1) return selectedServiceIds.length > 0;
