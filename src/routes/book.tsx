@@ -403,20 +403,25 @@ function BookPage() {
                     type="button"
                     onClick={() => toggleService(s.id)}
                     aria-pressed={isSelected}
-                    className={`luxe-card relative text-start rounded-xl p-4 border transition-all ${
+                    className={`luxe-card relative text-start rounded-xl p-4 border-2 transition-all duration-200 ${
                       isSelected
-                        ? "border-primary ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
-                        : "border-border/60 hover:border-primary/40"
+                        ? "border-primary outline outline-2 outline-primary/60 outline-offset-2 ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
+                        : "border-border/60 hover:border-primary/50"
                     }`}
                   >
                     {isSelected && (
-                      <div className="absolute -top-2 -start-2 h-7 w-7 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-bold shadow-lg">
+                      <div className="absolute -top-2 -start-2 h-7 w-7 rounded-full border-2 border-background bg-primary text-primary-foreground grid place-items-center text-sm font-bold shadow-lg outline outline-2 outline-primary/70">
                         {idx + 1}
                       </div>
                     )}
                     <div className="flex items-start justify-between gap-2">
-                      <div>
+                      <div className="min-w-0">
                         <div className="font-display text-lg">{localized(s)}</div>
+                        {localizedDescription(s) && (
+                          <div className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {localizedDescription(s)}
+                          </div>
+                        )}
                         <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
                           <Clock className="h-3 w-3" /> {s.duration_minutes} {t("min")}
                         </div>
@@ -462,8 +467,10 @@ function BookPage() {
                   type="button"
                   onClick={() => { setBarberId(b.id); setDate(null); setTime(""); }}
                   aria-pressed={barberId === b.id}
-                  className={`luxe-card rounded-xl p-5 flex items-center gap-4 border transition-all ${
-                    barberId === b.id ? "border-primary ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]" : "border-border/60 hover:border-primary/40"
+                  className={`luxe-card rounded-xl p-5 flex items-center gap-4 border-2 transition-all duration-200 ${
+                    barberId === b.id
+                      ? "border-primary outline outline-2 outline-primary/60 outline-offset-2 ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
+                      : "border-border/60 hover:border-primary/50"
                   }`}
                 >
                   <div className="h-14 w-14 rounded-full gold-border grid place-items-center bg-gradient-to-br from-card to-background overflow-hidden shrink-0">
@@ -475,7 +482,7 @@ function BookPage() {
                   </div>
                   <div className="text-start">
                     <div className="font-display text-lg">{localized(b)}</div>
-                    <div className="text-xs text-muted-foreground">{t("barbers")}</div>
+                    <div className="text-xs text-muted-foreground">{b.bio || "Master Barber"}</div>
                   </div>
                 </button>
               ))}
