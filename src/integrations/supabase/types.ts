@@ -59,6 +59,7 @@ export type Database = {
           name_ar: string | null
           photo_url: string | null
           sort_order: number
+          user_id: string | null
         }
         Insert: {
           active?: boolean
@@ -69,6 +70,7 @@ export type Database = {
           name_ar?: string | null
           photo_url?: string | null
           sort_order?: number
+          user_id?: string | null
         }
         Update: {
           active?: boolean
@@ -79,6 +81,7 @@ export type Database = {
           name_ar?: string | null
           photo_url?: string | null
           sort_order?: number
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -232,11 +235,13 @@ export type Database = {
       services: {
         Row: {
           active: boolean
+          conflict_group: string | null
           created_at: string
           description: string | null
           description_ar: string | null
           duration_minutes: number
           id: string
+          includes_groups: string[] | null
           name: string
           name_ar: string | null
           price_jod: number
@@ -244,11 +249,13 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          conflict_group?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
           duration_minutes?: number
           id?: string
+          includes_groups?: string[] | null
           name: string
           name_ar?: string | null
           price_jod: number
@@ -256,11 +263,13 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          conflict_group?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
           duration_minutes?: number
           id?: string
+          includes_groups?: string[] | null
           name?: string
           name_ar?: string | null
           price_jod?: number
@@ -334,7 +343,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin"
+      app_role: "admin" | "employee"
       booking_status: "pending" | "confirmed" | "completed" | "cancelled"
     }
     CompositeTypes: {
@@ -463,7 +472,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin"],
+      app_role: ["admin", "employee"],
       booking_status: ["pending", "confirmed", "completed", "cancelled"],
     },
   },

@@ -85,9 +85,10 @@ function Index() {
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             {t("since")} · Amman, Jordan
           </div>
-          <h1 className="font-display text-5xl sm:text-7xl font-light leading-[1.05] tracking-tight">
-            <span className="block text-foreground/95">{t("premiumExperience").split(" ").slice(0, -2).join(" ")}</span>
-            <span className="block gold-text italic font-medium">{t("premiumExperience").split(" ").slice(-2).join(" ")}</span>
+          <h1 className="font-display font-light leading-[1.0] tracking-tight">
+            <span className="block text-foreground/95 text-4xl sm:text-6xl">{t("premiumExperience").split(" ").slice(0, -2).join(" ")}</span>
+            <span className="block gold-text italic font-semibold text-7xl sm:text-9xl mt-2">Nawras</span>
+            <span className="block text-foreground/80 text-2xl sm:text-4xl mt-2">The Barbershop</span>
           </h1>
           <p className="mt-6 max-w-xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
             {t("heroSubtitle")}
@@ -105,8 +106,22 @@ function Index() {
             </Button>
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 10:00 AM – 11:00 PM</div>
+          {/* Visible section nav (no hamburger) */}
+          <nav className="mt-10 flex flex-wrap justify-center gap-2 text-xs uppercase tracking-[0.2em]">
+            {[
+              { href: "#services", label: t("services") },
+              { href: "#barbers", label: t("barbers") },
+              { href: "#reviews", label: t("reviews") },
+              { href: "#contact", label: t("contact") },
+            ].map((l) => (
+              <a key={l.href} href={l.href} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-colors text-muted-foreground">
+                {l.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 12:00 PM – 12:00 AM</div>
             <div className="hidden sm:block h-4 w-px bg-border" />
             <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary/70" /> Wadi Al-Seer</div>
             <div className="hidden sm:block h-4 w-px bg-border" />

@@ -104,6 +104,17 @@ const dict: Dict = {
   scanToBook: { en: "Scan to book", ar: "امسح للحجز" },
   findUs: { en: "Find us on the map", ar: "اعثر علينا على الخريطة" },
   noServiceSelected: { en: "Please select at least one service", ar: "يرجى اختيار خدمة واحدة على الأقل" },
+  customerLogin: { en: "Customer Login", ar: "دخول العميل" },
+  staffLogin: { en: "Staff Login", ar: "دخول الموظفين" },
+  ownerLogin: { en: "Owner / Admin", ar: "المالك / الإدارة" },
+  employeeLogin: { en: "Employee Barber", ar: "حلاق موظف" },
+  loginRequired: { en: "Please sign in to book", ar: "يرجى تسجيل الدخول للحجز" },
+  createAccount: { en: "Create account", ar: "إنشاء حساب" },
+  noAccount: { en: "No account?", ar: "لا تملك حساباً؟" },
+  haveAccount: { en: "Already have an account?", ar: "لديك حساب؟" },
+  myBookings: { en: "My bookings", ar: "حجوزاتي" },
+  serviceSwapped: { en: "Replaced previous selection", ar: "تم استبدال الاختيار السابق" },
+  serviceIncluded: { en: "Already included in another service", ar: "مشمولة بالفعل في خدمة أخرى" },
 };
 
 const I18nContext = createContext<{

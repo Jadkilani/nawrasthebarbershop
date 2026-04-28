@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -9,15 +9,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Check, ChevronLeft, ChevronRight, Clock, Scissors, User, Calendar as CalIcon, ArrowLeft } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Clock, Scissors, User, Calendar as CalIcon, ArrowLeft, Lock } from "lucide-react";
 import { addDays, format, isBefore, isSameDay, startOfDay } from "date-fns";
 
 export const Route = createFileRoute("/book")({
   component: BookPage,
 });
 
-type Service = { id: string; name: string; name_ar: string | null; price_jod: number; duration_minutes: number };
-type Barber = { id: string; name: string; name_ar: string | null; photo_url: string | null };
+type Service = {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  price_jod: number;
+  duration_minutes: number;
+  conflict_group: string | null;
+  includes_groups: string[] | null;
+};
+type Barber = { id: string; name: string; name_ar: string | null; bio: string | null; photo_url: string | null };
 type WorkingHour = { weekday: number; open_time: string; close_time: string; is_open: boolean };
 type Unavailability = { barber_id: string; starts_at: string; ends_at: string };
 
@@ -31,6 +39,8 @@ function BookPage() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   const [services, setServices] = useState<Service[]>([]);
   const [barbers, setBarbers] = useState<Barber[]>([]);
@@ -48,6 +58,25 @@ function BookPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [takenSlots, setTakenSlots] = useState<{ start: number; end: number }[]>([]);
+
+  const timeSectionRef = useRef<HTMLDivElement | null>(null);
+
+  // Auth gate: customers MUST be signed in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSignedIn(!!session);
+      setAuthChecked(true);
+      if (session?.user) {
+        // Pre-fill name from email if empty
+        if (!name && session.user.email) setName(session.user.email.split("@")[0]);
+      }
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsSignedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selectedServices = useMemo(
     () => selectedServiceIds.map((id) => services.find((s) => s.id === id)!).filter(Boolean),
@@ -167,10 +196,56 @@ function BookPage() {
   const localized = <T extends { name: string; name_ar: string | null }>(item: T) =>
     lang === "ar" && item.name_ar ? item.name_ar : item.name;
 
+  // Smart toggle: handles conflict_group (auto-replace) and includes_groups (block duplicates already covered)
   const toggleService = (id: string) => {
-    setSelectedServiceIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
     setTime("");
+    setSelectedServiceIds((prev) => {
+      // Deselect if already selected
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+
+      const incoming = services.find((s) => s.id === id);
+      if (!incoming) return prev;
+
+      const incomingIncludes = new Set(incoming.includes_groups ?? []);
+      const incomingGroup = incoming.conflict_group;
+
+      // Block: if any currently-selected service ALREADY INCLUDES the incoming's group(s)
+      // e.g. Hair+Beard is selected (includes 'beard'), user taps Beard Trim (group=beard)
+      const blockedBy = prev
+        .map((pid) => services.find((s) => s.id === pid))
+        .filter(Boolean)
+        .find((s) => incomingGroup && (s!.includes_groups ?? []).includes(incomingGroup) && s!.id !== id);
+
+      if (blockedBy) {
+        toast.info(`${localized(blockedBy)} ${t("serviceIncluded")}`);
+        return prev;
+      }
+
+      // Replace: drop any selected service whose conflict_group OR included groups overlap with incoming's
+      const next = prev.filter((pid) => {
+        const s = services.find((x) => x.id === pid);
+        if (!s) return false;
+        const sameGroup = !!incomingGroup && s.conflict_group === incomingGroup;
+        const incomingCoversIt = (s.includes_groups ?? []).some((g) => incomingIncludes.has(g));
+        const itCoversIncoming = !!incomingGroup && (s.includes_groups ?? []).includes(incomingGroup);
+        return !(sameGroup || incomingCoversIt || itCoversIncoming);
+      });
+
+      if (next.length !== prev.length) {
+        toast.success(t("serviceSwapped"));
+      }
+      return [...next, id];
+    });
   };
+
+  // Auto-scroll to time section when a date is picked
+  useEffect(() => {
+    if (date && timeSectionRef.current) {
+      setTimeout(() => {
+        timeSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [date]);
 
   const canNext = (s: number) => {
     if (s === 1) return selectedServiceIds.length > 0;
@@ -248,11 +323,41 @@ function BookPage() {
     });
   };
 
+  // Auth gate UI for non-signed-in customers
+  if (authChecked && !isSignedIn) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 grid place-items-center px-4 py-16">
+          <div className="luxe-card rounded-2xl p-8 max-w-sm w-full text-center">
+            <div className="mx-auto h-12 w-12 rounded-full bg-primary/15 grid place-items-center mb-4">
+              <Lock className="h-5 w-5 text-primary" />
+            </div>
+            <h1 className="font-display text-2xl gold-text">{t("loginRequired")}</h1>
+            <p className="text-sm text-muted-foreground mt-2">Sign in to book your appointment.</p>
+            <div className="mt-6 space-y-2">
+              <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+                <Link to="/login" search={{ redirect: "/book" }}>{t("customerLogin")}</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full border-border/60">
+                <Link to="/login" search={{ redirect: "/book", mode: "signup" }}>{t("createAccount")}</Link>
+              </Button>
+              <Link to="/" className="block text-xs text-muted-foreground hover:text-primary mt-3">
+                ← {t("back_home")}
+              </Link>
+            </div>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
 
-      <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-10">
+      <main className="flex-1 mx-auto w-full max-w-2xl px-4 pt-10 pb-32">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6">
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("back_home")}
         </Link>
@@ -397,32 +502,34 @@ function BookPage() {
             </Section>
 
             {date && (
-              <Section title={t("selectTime")}>
-                {timeSlots.length === 0 ? (
-                  <div className="text-center text-sm text-muted-foreground py-8">{t("noSlots")}</div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot.iso}
-                        type="button"
-                        disabled={slot.disabled}
-                        onClick={() => setTime(slot.time24)}
-                        aria-pressed={time === slot.time24}
-                        className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
-                          slot.disabled
-                            ? "border-border/30 text-muted-foreground/40 line-through cursor-not-allowed"
-                            : time === slot.time24
-                            ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
-                            : "border-border/60 hover:border-primary/50"
-                        }`}
-                      >
-                        {slot.time12}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </Section>
+              <div ref={timeSectionRef}>
+                <Section title={t("selectTime")}>
+                  {timeSlots.length === 0 ? (
+                    <div className="text-center text-sm text-muted-foreground py-8">{t("noSlots")}</div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {timeSlots.map((slot) => (
+                        <button
+                          key={slot.iso}
+                          type="button"
+                          disabled={slot.disabled}
+                          onClick={() => setTime(slot.time24)}
+                          aria-pressed={time === slot.time24}
+                          className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
+                            slot.disabled
+                              ? "border-border/30 text-muted-foreground/40 line-through cursor-not-allowed"
+                              : time === slot.time24
+                              ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
+                              : "border-border/60 hover:border-primary/50"
+                          }`}
+                        >
+                          {slot.time12}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </Section>
+              </div>
             )}
           </div>
         )}
@@ -477,7 +584,11 @@ function BookPage() {
           </div>
         )}
 
-        <div className="mt-10 flex items-center justify-between gap-3">
+      </main>
+
+      {/* Sticky bottom nav: Back left, Next/Confirm right */}
+      <div className="fixed bottom-0 inset-x-0 z-30 border-t border-border/60 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto max-w-2xl px-4 py-3 flex items-center justify-between gap-3">
           <Button
             variant="outline"
             onClick={() => setStep((s) => Math.max(1, s - 1))}
@@ -490,7 +601,7 @@ function BookPage() {
             <Button
               onClick={() => setStep((s) => s + 1)}
               disabled={!canNext(step)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[var(--shadow-luxe)]"
             >
               {t("next")} <ChevronRight className="h-4 w-4 rtl:rotate-180" />
             </Button>
@@ -504,7 +615,7 @@ function BookPage() {
             </Button>
           )}
         </div>
-      </main>
+      </div>
 
       <SiteFooter />
     </div>

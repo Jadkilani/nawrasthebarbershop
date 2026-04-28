@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as BookingConfirmedRouteImport } from './routes/booking-confirmed'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookingConfirmedRoute = BookingConfirmedRouteImport.update({
   id: '/booking-confirmed',
   path: '/booking-confirmed',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
+  '/login': typeof LoginRoute
   '/admin/dashboard': typeof AdminDashboardRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
+  '/login': typeof LoginRoute
   '/admin/dashboard': typeof AdminDashboardRoute
 }
 export interface FileRoutesById {
@@ -61,6 +69,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/book': typeof BookRoute
   '/booking-confirmed': typeof BookingConfirmedRoute
+  '/login': typeof LoginRoute
   '/admin/dashboard': typeof AdminDashboardRoute
 }
 export interface FileRouteTypes {
@@ -70,15 +79,23 @@ export interface FileRouteTypes {
     | '/admin'
     | '/book'
     | '/booking-confirmed'
+    | '/login'
     | '/admin/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/book' | '/booking-confirmed' | '/admin/dashboard'
+  to:
+    | '/'
+    | '/admin'
+    | '/book'
+    | '/booking-confirmed'
+    | '/login'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/book'
     | '/booking-confirmed'
+    | '/login'
     | '/admin/dashboard'
   fileRoutesById: FileRoutesById
 }
@@ -87,10 +104,18 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BookRoute: typeof BookRoute
   BookingConfirmedRoute: typeof BookingConfirmedRoute
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/booking-confirmed': {
       id: '/booking-confirmed'
       path: '/booking-confirmed'
@@ -144,6 +169,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BookRoute: BookRoute,
   BookingConfirmedRoute: BookingConfirmedRoute,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
