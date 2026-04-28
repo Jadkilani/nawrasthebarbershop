@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Check, ChevronLeft, ChevronRight, Clock, Scissors, User, Calendar as CalIcon, ArrowLeft } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Clock, Scissors, User, Calendar as CalIcon, ArrowLeft, Lock } from "lucide-react";
 import { addDays, format, isBefore, isSameDay, startOfDay } from "date-fns";
 
 export const Route = createFileRoute("/book")({
