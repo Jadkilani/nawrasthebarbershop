@@ -584,7 +584,11 @@ function BookPage() {
           </div>
         )}
 
-        <div className="mt-10 flex items-center justify-between gap-3">
+      </main>
+
+      {/* Sticky bottom nav: Back left, Next/Confirm right */}
+      <div className="fixed bottom-0 inset-x-0 z-30 border-t border-border/60 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto max-w-2xl px-4 py-3 flex items-center justify-between gap-3">
           <Button
             variant="outline"
             onClick={() => setStep((s) => Math.max(1, s - 1))}
@@ -597,7 +601,7 @@ function BookPage() {
             <Button
               onClick={() => setStep((s) => s + 1)}
               disabled={!canNext(step)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[var(--shadow-luxe)]"
             >
               {t("next")} <ChevronRight className="h-4 w-4 rtl:rotate-180" />
             </Button>
@@ -611,7 +615,7 @@ function BookPage() {
             </Button>
           )}
         </div>
-      </main>
+      </div>
 
       <SiteFooter />
     </div>
