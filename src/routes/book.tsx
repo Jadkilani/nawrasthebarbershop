@@ -323,11 +323,41 @@ function BookPage() {
     });
   };
 
+  // Auth gate UI for non-signed-in customers
+  if (authChecked && !isSignedIn) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 grid place-items-center px-4 py-16">
+          <div className="luxe-card rounded-2xl p-8 max-w-sm w-full text-center">
+            <div className="mx-auto h-12 w-12 rounded-full bg-primary/15 grid place-items-center mb-4">
+              <Lock className="h-5 w-5 text-primary" />
+            </div>
+            <h1 className="font-display text-2xl gold-text">{t("loginRequired")}</h1>
+            <p className="text-sm text-muted-foreground mt-2">Sign in to book your appointment.</p>
+            <div className="mt-6 space-y-2">
+              <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+                <Link to="/login" search={{ redirect: "/book" }}>{t("customerLogin")}</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full border-border/60">
+                <Link to="/login" search={{ redirect: "/book", mode: "signup" }}>{t("createAccount")}</Link>
+              </Button>
+              <Link to="/" className="block text-xs text-muted-foreground hover:text-primary mt-3">
+                ← {t("back_home")}
+              </Link>
+            </div>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
 
-      <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-10">
+      <main className="flex-1 mx-auto w-full max-w-2xl px-4 pt-10 pb-32">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6">
           <ArrowLeft className="h-4 w-4 rtl:rotate-180" /> {t("back_home")}
         </Link>
