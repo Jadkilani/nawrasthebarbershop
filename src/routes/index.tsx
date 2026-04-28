@@ -69,6 +69,12 @@ function Index() {
     desc: lang === "ar" && (item as any).description_ar ? (item as any).description_ar : (item as any).description ?? (item as any).bio ?? "",
   });
 
+  const scrollToSection = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", href);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -114,7 +120,7 @@ function Index() {
               { href: "#reviews", label: t("reviews") },
               { href: "#contact", label: t("contact") },
             ].map((l) => (
-              <a key={l.href} href={l.href} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-colors text-muted-foreground">
+              <a key={l.href} href={l.href} onClick={(event) => scrollToSection(event, l.href)} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-all duration-200 text-muted-foreground active:border-primary active:text-primary">
                 {l.label}
               </a>
             ))}
@@ -135,7 +141,7 @@ function Index() {
       <div className="hairline mx-auto max-w-6xl" />
 
       {/* SERVICES */}
-      <section id="services" className="mx-auto max-w-6xl px-4 py-20">
+      <section id="services" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
         <SectionHeader eyebrow={t("ourCraft")} title={t("services")} />
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((s) => {
@@ -162,7 +168,7 @@ function Index() {
       <div className="hairline mx-auto max-w-6xl" />
 
       {/* BARBERS */}
-      <section id="barbers" className="mx-auto max-w-6xl px-4 py-20">
+      <section id="barbers" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
         <SectionHeader eyebrow={t("meetTheTeam")} title={t("barbers")} />
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {barbers.map((b) => {
@@ -188,7 +194,7 @@ function Index() {
 
       {/* REVIEWS */}
       {reviews.length > 0 && (
-        <section id="reviews" className="mx-auto max-w-6xl px-4 py-20">
+        <section id="reviews" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
           <SectionHeader eyebrow="✦" title={t("whatClientsSay")} />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {reviews.map((r) => (
@@ -207,7 +213,7 @@ function Index() {
       )}
 
       {/* CONTACT */}
-      <section id="contact" className="mx-auto max-w-6xl px-4 py-20">
+      <section id="contact" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
         <SectionHeader eyebrow={t("visitUs")} title={t("location")} />
 
         <div className="mt-10 grid lg:grid-cols-2 gap-6">
