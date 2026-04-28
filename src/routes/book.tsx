@@ -20,6 +20,8 @@ type Service = {
   id: string;
   name: string;
   name_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
   price_jod: number;
   duration_minutes: number;
   conflict_group: string | null;
@@ -196,6 +198,11 @@ function BookPage() {
   const localized = <T extends { name: string; name_ar: string | null }>(item: T) =>
     lang === "ar" && item.name_ar ? item.name_ar : item.name;
 
+  const localizedDescription = (service: Service) =>
+    lang === "ar" && service.description_ar ? service.description_ar : service.description ?? "";
+
+  const isNawrasMonday = (day: Date) => barber?.name.toLowerCase().includes("nawras") && day.getDay() === 1;
+
   // Smart toggle: handles conflict_group (auto-replace) and includes_groups (block duplicates already covered)
   const toggleService = (id: string) => {
     setTime("");
@@ -252,6 +259,14 @@ function BookPage() {
     if (s === 2) return !!barberId;
     if (s === 3) return !!date && !!time;
     return false;
+  };
+
+  const goNext = () => {
+    if (!canNext(step)) {
+      toast.info(step === 2 ? t("selectBarber") : t("completeStep"));
+      return;
+    }
+    setStep((s) => s + 1);
   };
 
   const handleSubmit = async () => {
