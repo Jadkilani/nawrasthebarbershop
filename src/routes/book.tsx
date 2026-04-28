@@ -16,8 +16,16 @@ export const Route = createFileRoute("/book")({
   component: BookPage,
 });
 
-type Service = { id: string; name: string; name_ar: string | null; price_jod: number; duration_minutes: number };
-type Barber = { id: string; name: string; name_ar: string | null; photo_url: string | null };
+type Service = {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  price_jod: number;
+  duration_minutes: number;
+  conflict_group: string | null;
+  includes_groups: string[] | null;
+};
+type Barber = { id: string; name: string; name_ar: string | null; bio: string | null; photo_url: string | null };
 type WorkingHour = { weekday: number; open_time: string; close_time: string; is_open: boolean };
 type Unavailability = { barber_id: string; starts_at: string; ends_at: string };
 
