@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -69,7 +69,7 @@ function Index() {
     desc: lang === "ar" && (item as any).description_ar ? (item as any).description_ar : (item as any).description ?? (item as any).bio ?? "",
   });
 
-  const scrollToSection = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToSection = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     event.preventDefault();
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
     window.history.replaceState(null, "", href);
