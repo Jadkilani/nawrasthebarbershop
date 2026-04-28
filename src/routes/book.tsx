@@ -497,7 +497,7 @@ function BookPage() {
                 {dayOptions.map((d) => {
                   const wh = workingHours.find((w) => w.weekday === d.getDay());
                   const dateStr = format(d, "yyyy-MM-dd");
-                  const closed = !wh?.is_open || closedDays.includes(dateStr);
+                  const closed = !wh?.is_open || closedDays.includes(dateStr) || isNawrasMonday(d);
                   const selected = date && isSameDay(date, d);
                   return (
                     <button
@@ -516,7 +516,7 @@ function BookPage() {
                     >
                       <div className="text-[10px] uppercase tracking-wider">{format(d, "EEE")}</div>
                       <div className="font-display text-lg">{format(d, "d")}</div>
-                      <div className="text-[10px] text-muted-foreground">{format(d, "MMM")}</div>
+                      <div className="text-[10px] text-muted-foreground">{isNawrasMonday(d) ? "Off" : format(d, "MMM")}</div>
                     </button>
                   );
                 })}
@@ -621,7 +621,7 @@ function BookPage() {
           </Button>
           {step < 4 ? (
             <Button
-              onClick={() => setStep((s) => s + 1)}
+              onClick={goNext}
               disabled={!canNext(step)}
               className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[var(--shadow-luxe)]"
             >
