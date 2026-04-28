@@ -472,32 +472,34 @@ function BookPage() {
             </Section>
 
             {date && (
-              <Section title={t("selectTime")}>
-                {timeSlots.length === 0 ? (
-                  <div className="text-center text-sm text-muted-foreground py-8">{t("noSlots")}</div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot.iso}
-                        type="button"
-                        disabled={slot.disabled}
-                        onClick={() => setTime(slot.time24)}
-                        aria-pressed={time === slot.time24}
-                        className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
-                          slot.disabled
-                            ? "border-border/30 text-muted-foreground/40 line-through cursor-not-allowed"
-                            : time === slot.time24
-                            ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
-                            : "border-border/60 hover:border-primary/50"
-                        }`}
-                      >
-                        {slot.time12}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </Section>
+              <div ref={timeSectionRef}>
+                <Section title={t("selectTime")}>
+                  {timeSlots.length === 0 ? (
+                    <div className="text-center text-sm text-muted-foreground py-8">{t("noSlots")}</div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {timeSlots.map((slot) => (
+                        <button
+                          key={slot.iso}
+                          type="button"
+                          disabled={slot.disabled}
+                          onClick={() => setTime(slot.time24)}
+                          aria-pressed={time === slot.time24}
+                          className={`px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
+                            slot.disabled
+                              ? "border-border/30 text-muted-foreground/40 line-through cursor-not-allowed"
+                              : time === slot.time24
+                              ? "border-primary bg-primary/15 text-primary ring-2 ring-primary/30"
+                              : "border-border/60 hover:border-primary/50"
+                          }`}
+                        >
+                          {slot.time12}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </Section>
+              </div>
             )}
           </div>
         )}
