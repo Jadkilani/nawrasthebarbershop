@@ -20,6 +20,8 @@ type Service = {
   id: string;
   name: string;
   name_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
   price_jod: number;
   duration_minutes: number;
   conflict_group: string | null;
@@ -196,6 +198,11 @@ function BookPage() {
   const localized = <T extends { name: string; name_ar: string | null }>(item: T) =>
     lang === "ar" && item.name_ar ? item.name_ar : item.name;
 
+  const localizedDescription = (service: Service) =>
+    lang === "ar" && service.description_ar ? service.description_ar : service.description ?? "";
+
+  const isNawrasMonday = (day: Date) => barber?.name.toLowerCase().includes("nawras") && day.getDay() === 1;
+
   // Smart toggle: handles conflict_group (auto-replace) and includes_groups (block duplicates already covered)
   const toggleService = (id: string) => {
     setTime("");
@@ -252,6 +259,14 @@ function BookPage() {
     if (s === 2) return !!barberId;
     if (s === 3) return !!date && !!time;
     return false;
+  };
+
+  const goNext = () => {
+    if (!canNext(step)) {
+      toast.info(step === 2 ? t("selectBarber") : t("completeStep"));
+      return;
+    }
+    setStep((s) => s + 1);
   };
 
   const handleSubmit = async () => {
@@ -388,20 +403,25 @@ function BookPage() {
                     type="button"
                     onClick={() => toggleService(s.id)}
                     aria-pressed={isSelected}
-                    className={`luxe-card relative text-start rounded-xl p-4 border transition-all ${
+                    className={`luxe-card relative text-start rounded-xl p-4 border-2 transition-all duration-200 ${
                       isSelected
-                        ? "border-primary ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
-                        : "border-border/60 hover:border-primary/40"
+                        ? "border-primary outline outline-2 outline-primary/60 outline-offset-2 ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
+                        : "border-border/60 hover:border-primary/50"
                     }`}
                   >
                     {isSelected && (
-                      <div className="absolute -top-2 -start-2 h-7 w-7 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-bold shadow-lg">
+                      <div className="absolute -top-2 -start-2 h-7 w-7 rounded-full border-2 border-background bg-primary text-primary-foreground grid place-items-center text-sm font-bold shadow-lg outline outline-2 outline-primary/70">
                         {idx + 1}
                       </div>
                     )}
                     <div className="flex items-start justify-between gap-2">
-                      <div>
+                      <div className="min-w-0">
                         <div className="font-display text-lg">{localized(s)}</div>
+                        {localizedDescription(s) && (
+                          <div className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {localizedDescription(s)}
+                          </div>
+                        )}
                         <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
                           <Clock className="h-3 w-3" /> {s.duration_minutes} {t("min")}
                         </div>
@@ -447,8 +467,10 @@ function BookPage() {
                   type="button"
                   onClick={() => { setBarberId(b.id); setDate(null); setTime(""); }}
                   aria-pressed={barberId === b.id}
-                  className={`luxe-card rounded-xl p-5 flex items-center gap-4 border transition-all ${
-                    barberId === b.id ? "border-primary ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]" : "border-border/60 hover:border-primary/40"
+                  className={`luxe-card rounded-xl p-5 flex items-center gap-4 border-2 transition-all duration-200 ${
+                    barberId === b.id
+                      ? "border-primary outline outline-2 outline-primary/60 outline-offset-2 ring-2 ring-primary/40 shadow-[var(--shadow-luxe)]"
+                      : "border-border/60 hover:border-primary/50"
                   }`}
                 >
                   <div className="h-14 w-14 rounded-full gold-border grid place-items-center bg-gradient-to-br from-card to-background overflow-hidden shrink-0">
@@ -460,7 +482,7 @@ function BookPage() {
                   </div>
                   <div className="text-start">
                     <div className="font-display text-lg">{localized(b)}</div>
-                    <div className="text-xs text-muted-foreground">{t("barbers")}</div>
+                    <div className="text-xs text-muted-foreground">{b.bio || "Master Barber"}</div>
                   </div>
                 </button>
               ))}
@@ -475,7 +497,7 @@ function BookPage() {
                 {dayOptions.map((d) => {
                   const wh = workingHours.find((w) => w.weekday === d.getDay());
                   const dateStr = format(d, "yyyy-MM-dd");
-                  const closed = !wh?.is_open || closedDays.includes(dateStr);
+                  const closed = !wh?.is_open || closedDays.includes(dateStr) || isNawrasMonday(d);
                   const selected = date && isSameDay(date, d);
                   return (
                     <button
@@ -494,7 +516,7 @@ function BookPage() {
                     >
                       <div className="text-[10px] uppercase tracking-wider">{format(d, "EEE")}</div>
                       <div className="font-display text-lg">{format(d, "d")}</div>
-                      <div className="text-[10px] text-muted-foreground">{format(d, "MMM")}</div>
+                      <div className="text-[10px] text-muted-foreground">{isNawrasMonday(d) ? "Off" : format(d, "MMM")}</div>
                     </button>
                   );
                 })}
@@ -599,7 +621,7 @@ function BookPage() {
           </Button>
           {step < 4 ? (
             <Button
-              onClick={() => setStep((s) => s + 1)}
+              onClick={goNext}
               disabled={!canNext(step)}
               className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[var(--shadow-luxe)]"
             >

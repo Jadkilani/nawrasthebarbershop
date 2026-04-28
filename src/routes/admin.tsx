@@ -35,16 +35,15 @@ function AdminLogin() {
       toast.error(error.message);
       return;
     }
-    // verify admin role
+    // verify staff/owner role
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", data.user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!roleData) {
+      .in("role", ["admin", "employee"]);
+    if (!roleData?.length) {
       await supabase.auth.signOut();
-      toast.error("This account does not have admin access.");
+      toast.error("This account does not have staff access.");
       return;
     }
     navigate({ to: "/admin/dashboard" });
