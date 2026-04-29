@@ -46,7 +46,7 @@ function AdminLogin() {
     }
 
     // Try to claim staff role from allowlist (no-op if already has it or not on allowlist)
-    await supabase.rpc("claim_staff_role").catch(() => {});
+    try { await supabase.rpc("claim_staff_role"); } catch {}
 
     const { data: roleData } = await supabase
       .from("user_roles")
