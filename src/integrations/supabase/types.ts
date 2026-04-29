@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_user_id: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       barber_unavailability: {
         Row: {
           barber_id: string
@@ -57,6 +108,7 @@ export type Database = {
           id: string
           name: string
           name_ar: string | null
+          phone: string | null
           photo_url: string | null
           sort_order: number
           user_id: string | null
@@ -68,6 +120,7 @@ export type Database = {
           id?: string
           name: string
           name_ar?: string | null
+          phone?: string | null
           photo_url?: string | null
           sort_order?: number
           user_id?: string | null
@@ -79,6 +132,7 @@ export type Database = {
           id?: string
           name?: string
           name_ar?: string | null
+          phone?: string | null
           photo_url?: string | null
           sort_order?: number
           user_id?: string | null
@@ -130,6 +184,7 @@ export type Database = {
       bookings: {
         Row: {
           barber_id: string
+          cancel_token: string
           created_at: string
           customer_name: string
           customer_notes: string | null
@@ -143,6 +198,7 @@ export type Database = {
         }
         Insert: {
           barber_id: string
+          cancel_token?: string
           created_at?: string
           customer_name: string
           customer_notes?: string | null
@@ -156,6 +212,7 @@ export type Database = {
         }
         Update: {
           barber_id?: string
+          cancel_token?: string
           created_at?: string
           customer_name?: string
           customer_notes?: string | null
@@ -277,6 +334,44 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_allowlist: {
+        Row: {
+          barber_id: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          full_name: string | null
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          barber_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Update: {
+          barber_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_allowlist_barber_id_fkey"
+            columns: ["barber_id"]
+            isOneToOne: false
+            referencedRelation: "barbers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -327,12 +422,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_staff_role: { Args: never; Returns: boolean }
+      customer_cancel_booking: {
+        Args: { _booking_id: string; _token: string }
+        Returns: boolean
+      }
+      customer_reschedule_booking: {
+        Args: {
+          _booking_id: string
+          _new_ends: string
+          _new_starts: string
+          _token: string
+        }
+        Returns: boolean
+      }
       get_taken_slots: {
         Args: { _barber_id: string; _day: string }
         Returns: {
           ends_at: string
           starts_at: string
         }[]
+      }
+      has_active_booking_by_phone: {
+        Args: { _phone: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
@@ -341,10 +454,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      insights_summary: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "employee"
-      booking_status: "pending" | "confirmed" | "completed" | "cancelled"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "completed"
+        | "cancelled"
+        | "no_show"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -473,7 +592,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "employee"],
-      booking_status: ["pending", "confirmed", "completed", "cancelled"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled",
+        "no_show",
+      ],
     },
   },
 } as const
