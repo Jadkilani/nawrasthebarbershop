@@ -60,8 +60,13 @@ function BookPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [takenSlots, setTakenSlots] = useState<{ start: number; end: number }[]>([]);
+  const [dupOpen, setDupOpen] = useState(false);
+  const [dupAck, setDupAck] = useState(false);
 
   const timeSectionRef = useRef<HTMLDivElement | null>(null);
+  const stepTopRef = useRef<HTMLDivElement | null>(null);
+  const detailsRef = useRef<HTMLDivElement | null>(null);
+  const dateRef = useRef<HTMLDivElement | null>(null);
 
   // Auth gate: customers MUST be signed in
   useEffect(() => {
