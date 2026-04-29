@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { MapPin, Phone, MessageCircle, Instagram, Facebook } from "lucide-react";
+import { MapPin, Phone, MessageCircle, Instagram, Facebook, Lock } from "lucide-react";
 
 const INSTAGRAM_URL = "https://www.instagram.com/nawras.jo1?igsh=aXFqM2NibXM4NzVx";
 const FACEBOOK_URL = "https://www.facebook.com/share/1Bp3jCRwy1/";
@@ -40,33 +40,29 @@ export function SiteFooter() {
         </div>
         <div className="text-sm space-y-2">
           <div className="font-medium text-foreground/90">{t("hours")}</div>
-          <div className="text-muted-foreground">Sun – Sat · 10:00 AM – 11:00 PM</div>
+          <div className="text-muted-foreground">Sun – Sat · 12:00 PM – 11:30 PM</div>
 
           <div className="font-medium text-foreground/90 pt-3">{t("followUs")}</div>
           <div className="flex items-center gap-2">
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors"
-            >
+            <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" aria-label="Instagram"
+              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors">
               <Instagram className="h-4 w-4" />
             </a>
-            <a
-              href={FACEBOOK_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors"
-            >
+            <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" aria-label="Facebook"
+              className="h-9 w-9 grid place-items-center rounded-full border border-border/60 hover:border-primary hover:text-primary transition-colors">
               <Facebook className="h-4 w-4" />
             </a>
           </div>
 
-          <Link to="/admin" className="inline-block text-xs text-muted-foreground/60 hover:text-primary mt-4">
-            {t("adminLogin")} →
-          </Link>
+          <div className="flex items-center gap-3 pt-4 text-xs">
+            <Link to="/login" className="text-muted-foreground/70 hover:text-primary">
+              {t("customerLogin")}
+            </Link>
+            <span className="text-muted-foreground/30">·</span>
+            <Link to="/admin" className="text-muted-foreground/70 hover:text-primary inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" /> Staff / {t("adminLogin")}
+            </Link>
+          </div>
         </div>
       </div>
       <div className="hairline" />
