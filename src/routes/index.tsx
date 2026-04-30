@@ -118,7 +118,8 @@ function Index() {
               { href: "#services", label: t("services") },
               { href: "#barbers", label: t("barbers") },
               { href: "#reviews", label: t("reviews") },
-              { href: "#contact", label: "Contact & Location" },
+              { href: "#contact", label: t("contact") },
+              { href: "#location", label: t("location") },
             ].map((l) => (
               <a key={l.href} href={l.href} onClick={(event) => scrollToSection(event, l.href)} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-all duration-200 text-muted-foreground active:border-primary active:text-primary">
                 {l.label}
@@ -214,83 +215,89 @@ function Index() {
 
       {/* CONTACT */}
       <section id="contact" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
-        <SectionHeader eyebrow={t("visitUs")} title={t("location")} />
-
-        <div className="mt-10 grid lg:grid-cols-2 gap-6">
-          {/* MAP */}
-          <div className="luxe-card rounded-2xl overflow-hidden">
-            <div className="aspect-[4/3] w-full">
-              <iframe
-                title="Nawras Barbershop location"
-                src={MAP_EMBED}
-                className="w-full h-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-            <div className="p-5 flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-primary/80">{t("findUs")}</div>
-                <p className="font-display text-lg mt-1">{t("address")}</p>
-              </div>
-              <Button asChild variant="outline" size="sm" className="border-primary/50 hover:bg-primary/10 shrink-0">
-                <a href={MAP_LINK} target="_blank" rel="noreferrer">
-                  <MapPin className="h-4 w-4" /> {t("directions")}
+        <SectionHeader eyebrow={t("visitUs")} title={t("contact")} />
+        <div className="mt-10 max-w-2xl mx-auto space-y-6">
+          <div className="luxe-card rounded-2xl p-6">
+            <div className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-4">{t("contact")}</div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
+                <a href={`tel:${phone}`}>
+                  <Phone className="h-4 w-4 text-primary" /> 07 9817 5723
+                </a>
+              </Button>
+              <Button asChild className="justify-start bg-[#25D366] hover:bg-[#1ebd5a] text-white h-12">
+                <a href={`https://wa.me/${phone.replace("+", "")}`} target="_blank" rel="noreferrer">
+                  <MessageCircle className="h-4 w-4" /> {t("whatsapp")}
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer">
+                  <Instagram className="h-4 w-4 text-primary" /> Instagram
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
+                <a href={FACEBOOK_URL} target="_blank" rel="noreferrer">
+                  <Facebook className="h-4 w-4 text-primary" /> Facebook
                 </a>
               </Button>
             </div>
           </div>
 
-          {/* CONTACT + QR */}
-          <div className="space-y-6">
-            <div className="luxe-card rounded-2xl p-6">
-              <div className="text-xs uppercase tracking-[0.2em] text-primary/80 mb-4">{t("contact")}</div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
-                  <a href={`tel:${phone}`}>
-                    <Phone className="h-4 w-4 text-primary" /> 07 9817 5723
-                  </a>
-                </Button>
-                <Button asChild className="justify-start bg-[#25D366] hover:bg-[#1ebd5a] text-white h-12">
-                  <a href={`https://wa.me/${phone.replace("+", "")}`} target="_blank" rel="noreferrer">
-                    <MessageCircle className="h-4 w-4" /> {t("whatsapp")}
-                  </a>
-                </Button>
-                <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
-                  <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer">
-                    <Instagram className="h-4 w-4 text-primary" /> Instagram
-                  </a>
-                </Button>
-                <Button asChild variant="outline" className="justify-start border-border/60 hover:border-primary/60 h-12">
-                  <a href={FACEBOOK_URL} target="_blank" rel="noreferrer">
-                    <Facebook className="h-4 w-4 text-primary" /> Facebook
-                  </a>
-                </Button>
-              </div>
+          <div className="luxe-card rounded-2xl p-6 flex items-center gap-5">
+            <div className="bg-white p-3 rounded-xl shrink-0">
+              <QRCodeSVG
+                value={typeof window !== "undefined" ? window.location.origin + "/book" : "https://nawras.app/book"}
+                size={120}
+                bgColor="#ffffff"
+                fgColor="#1a1a1a"
+                level="M"
+              />
             </div>
-
-            <div className="luxe-card rounded-2xl p-6 flex items-center gap-5">
-              <div className="bg-white p-3 rounded-xl shrink-0">
-                <QRCodeSVG
-                  value={typeof window !== "undefined" ? window.location.origin + "/book" : "https://nawras.app/book"}
-                  size={120}
-                  bgColor="#ffffff"
-                  fgColor="#1a1a1a"
-                  level="M"
-                />
-              </div>
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-primary/80">{t("scanToBook")}</div>
-                <p className="font-display text-xl mt-1">{t("bookNow")}</p>
-                <p className="text-sm text-muted-foreground mt-1">Scan with your phone camera to open the booking page.</p>
-              </div>
+            <div>
+              <div className="text-xs uppercase tracking-[0.2em] text-primary/80">{t("scanToBook")}</div>
+              <p className="font-display text-xl mt-1">{t("bookNow")}</p>
+              <p className="text-sm text-muted-foreground mt-1">Scan with your phone camera to open the booking page.</p>
             </div>
+          </div>
 
-            <Button asChild size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 shadow-[var(--shadow-luxe)]">
-              <Link to="/book">{t("bookNow")} <ArrowRight className="h-4 w-4 ms-1 rtl:rotate-180" /></Link>
+          <Button asChild size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-12 shadow-[var(--shadow-luxe)]">
+            <Link to="/book">{t("bookNow")} <ArrowRight className="h-4 w-4 ms-1 rtl:rotate-180" /></Link>
+          </Button>
+        </div>
+      </section>
+
+      <div className="hairline mx-auto max-w-6xl" />
+
+      {/* LOCATION */}
+      <section id="location" className="mx-auto max-w-6xl px-4 py-20 scroll-mt-20">
+        <SectionHeader eyebrow={t("findUs")} title={t("location")} />
+        <div className="mt-10 luxe-card rounded-2xl overflow-hidden max-w-3xl mx-auto">
+          <div className="aspect-[4/3] w-full">
+            <iframe
+              title="Nawras Barbershop location"
+              src={MAP_EMBED}
+              className="w-full h-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+          <div className="p-5 flex items-start justify-between gap-3">
+            <div>
+              <div className="text-xs uppercase tracking-[0.2em] text-primary/80">{t("findUs")}</div>
+              <p className="font-display text-lg mt-1">{t("address")}</p>
+            </div>
+            <Button asChild variant="outline" size="sm" className="border-primary/50 hover:bg-primary/10 shrink-0">
+              <a href={MAP_LINK} target="_blank" rel="noreferrer">
+                <MapPin className="h-4 w-4" /> {t("directions")}
+              </a>
             </Button>
           </div>
+        </div>
+        <div className="mt-8 text-center">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">
+            ↑ {t("backToTop")}
+          </button>
         </div>
       </section>
 
