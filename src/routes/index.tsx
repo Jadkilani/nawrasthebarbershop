@@ -118,7 +118,8 @@ function Index() {
               { href: "#services", label: t("services") },
               { href: "#barbers", label: t("barbers") },
               { href: "#reviews", label: t("reviews") },
-              { href: "#contact", label: "Contact & Location" },
+              { href: "#contact", label: t("contact") },
+              { href: "#location", label: t("location") },
             ].map((l) => (
               <a key={l.href} href={l.href} onClick={(event) => scrollToSection(event, l.href)} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-all duration-200 text-muted-foreground active:border-primary active:text-primary">
                 {l.label}
