@@ -118,7 +118,7 @@ function Index() {
               { href: "#services", label: t("services") },
               { href: "#barbers", label: t("barbers") },
               { href: "#reviews", label: t("reviews") },
-              { href: "#contact", label: t("contact") },
+              { href: "#contact", label: "Contact & Location" },
             ].map((l) => (
               <a key={l.href} href={l.href} onClick={(event) => scrollToSection(event, l.href)} className="px-3 py-1.5 rounded-full border border-border/60 hover:border-primary/60 hover:text-primary transition-all duration-200 text-muted-foreground active:border-primary active:text-primary">
                 {l.label}
@@ -127,7 +127,7 @@ function Index() {
           </nav>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 12:00 PM – 12:00 AM</div>
+            <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary/70" /> 10:00 AM – 11:00 PM</div>
             <div className="hidden sm:block h-4 w-px bg-border" />
             <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary/70" /> Wadi Al-Seer</div>
             <div className="hidden sm:block h-4 w-px bg-border" />

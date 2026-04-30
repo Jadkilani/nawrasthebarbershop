@@ -12,7 +12,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { format, startOfDay, endOfDay, addDays } from "date-fns";
-import { LogOut, Plus, Trash2, Pencil, Calendar, Scissors, Users, Clock, CalendarOff, Phone, MessageCircle } from "lucide-react";
+import { LogOut, Plus, Trash2, Pencil, Calendar, Scissors, Users, Clock, CalendarOff, Phone, MessageCircle, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: Dashboard,
@@ -81,6 +81,7 @@ function Dashboard() {
           <TabsList className="bg-card border border-border/60 p-1 h-auto flex-wrap">
             <TabsTrigger value="appointments"><Calendar className="h-4 w-4 me-1.5" /> {t("appointments")}</TabsTrigger>
             <TabsTrigger value="services"><Scissors className="h-4 w-4 me-1.5" /> {t("manageServices")}</TabsTrigger>
+            <TabsTrigger value="staff"><Users className="h-4 w-4 me-1.5" /> Staff</TabsTrigger>
             <TabsTrigger value="barbers"><Users className="h-4 w-4 me-1.5" /> {t("manageBarbers")}</TabsTrigger>
             <TabsTrigger value="hours"><Clock className="h-4 w-4 me-1.5" /> {t("manageHours")}</TabsTrigger>
             <TabsTrigger value="closed"><CalendarOff className="h-4 w-4 me-1.5" /> {t("closedDays")}</TabsTrigger>
@@ -88,6 +89,7 @@ function Dashboard() {
 
           <TabsContent value="appointments" className="mt-6"><AppointmentsTab /></TabsContent>
           <TabsContent value="services" className="mt-6"><ServicesTab /></TabsContent>
+          <TabsContent value="staff" className="mt-6"><StaffTab /></TabsContent>
           <TabsContent value="barbers" className="mt-6"><BarbersTab /></TabsContent>
           <TabsContent value="hours" className="mt-6"><HoursTab /></TabsContent>
           <TabsContent value="closed" className="mt-6"><ClosedDaysTab /></TabsContent>
@@ -309,7 +311,112 @@ function ServicesTab() {
   );
 }
 
-/* ---------------- BARBERS ---------------- */
+/* ---------------- STAFF ALLOWLIST ---------------- */
+function StaffTab() {
+  const { t } = useI18n();
+  const [staff, setStaff] = useState<any[]>([]);
+  const [barbers, setBarbers] = useState<Barber[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [selectedBarberId, setSelectedBarberId] = useState<string>("");
+
+  const load = useCallback(async () => {
+    const { data } = await supabase.from("staff_allowlist").select("*").order("created_at", { ascending: false });
+    setStaff((data ?? []) as any[]);
+    const { data: b } = await supabase.from("barbers").select("*").order("sort_order");
+    setBarbers((b ?? []) as Barber[]);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const addStaff = async () => {
+    if (!newEmail || !newEmail.includes("@")) return toast.error("Valid email required");
+    const { error } = await supabase.from("staff_allowlist").insert({
+      email: newEmail.toLowerCase(),
+      phone: newPhone || null,
+      barber_id: selectedBarberId || null,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Staff member added");
+    setNewEmail("");
+    setNewPhone("");
+    setSelectedBarberId("");
+    setAdding(false);
+    load();
+  };
+
+  const removeStaff = async (id: string) => {
+    if (!confirm("Remove this staff member?")) return;
+    const { error } = await supabase.from("staff_allowlist").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Staff member removed");
+    load();
+  };
+
+  return (
+    <div>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setAdding(!adding)} className="bg-primary text-primary-foreground hover:bg-primary/90"><Plus className="h-4 w-4" /> Add Staff</Button>
+      </div>
+
+      {adding && (
+        <div className="luxe-card rounded-xl p-5 mb-6">
+          <h3 className="font-display text-lg mb-4">Add Staff Member</h3>
+          <div className="space-y-3">
+            <div>
+              <Label>Email</Label>
+              <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="staff@example.com" className="mt-1.5" />
+            </div>
+            <div>
+              <Label>Phone (optional)</Label>
+              <Input type="tel" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+962X XXXX XXXX" className="mt-1.5" />
+            </div>
+            <div>
+              <Label>Assign to Barber (optional)</Label>
+              <Select value={selectedBarberId} onValueChange={setSelectedBarberId}>
+                <SelectTrigger className="mt-1.5"><SelectValue placeholder="None" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {barbers.map((b) => (
+                    <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={addStaff} className="bg-primary text-primary-foreground hover:bg-primary/90">Save</Button>
+              <Button onClick={() => setAdding(false)} variant="outline">Cancel</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {staff.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">No staff members added yet</div>
+        ) : (
+          staff.map((s) => (
+            <div key={s.id} className="luxe-card rounded-xl p-4 flex items-start justify-between gap-3">
+              <div>
+                <div className="font-display text-lg flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" /> {s.email}
+                </div>
+                {s.phone && <div className="text-sm text-muted-foreground mt-1"><Phone className="h-3.5 w-3.5 inline me-1" />{s.phone}</div>}
+                {s.barber_id && <div className="text-xs text-primary/70 mt-1">Assigned to barber</div>}
+              </div>
+              <Button size="sm" variant="outline" onClick={() => removeStaff(s.id)} className="border-destructive/40 text-destructive hover:bg-destructive/10">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* -------- BARBERS -------- */
 function BarbersTab() {
   const { t } = useI18n();
   const [items, setItems] = useState<Barber[]>([]);
